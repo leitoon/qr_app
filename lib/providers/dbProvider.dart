@@ -75,4 +75,29 @@ return res;
   ? ScanModel.fromJson(res.first): 
   null;
  }
+
+ Future<List<ScanModel>?> getTodosScans() async
+ {
+  final db=await database;
+  final res= await db?.query('Scans');
+  return res!.isNotEmpty
+  ? res.map((e) => ScanModel.fromJson(e)).toList()
+  : [];
+ }
+ Future<List<ScanModel>?> getScansPortipo(String tipo) async
+ {
+  final db=await database;
+  final res= await db?.rawQuery('''
+  SELECT * FROM Scans WHERE tipo='$tipo'
+''');
+  return res!.isNotEmpty
+  ? res.map((e) => ScanModel.fromJson(e)).toList()
+  : [];
+ }
+
+ Future<int?> updateScan(ScanModel nuevoScan) async {
+  final db=await database;
+  final res= await db?.update('Scans', nuevoScan.toJson(), where: 'id=?', whereArgs: [nuevoScan.id]);
+  return res;
+ }
 }
