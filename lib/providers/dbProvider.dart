@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_app/models/scan_model.dart';
 import 'package:sqflite/sqflite.dart';
-
+export 'package:qr_app/models/scan_model.dart';
 class DBProvider {
   static Database? _database;
   static final DBProvider db= DBProvider._();
@@ -99,5 +99,25 @@ return res;
   final db=await database;
   final res= await db?.update('Scans', nuevoScan.toJson(), where: 'id=?', whereArgs: [nuevoScan.id]);
   return res;
- }
+ } 
+
+  Future <int?> deleteScan(int id) async {
+    final db=await database;
+    final res= await db?.delete('Scans', where: 'id=?',whereArgs: [id]);
+    return res;
+  }
+
+  // Future <int?> deleteAllScan() async {
+  //   final db=await database;
+  //   final res= await db?.delete('Scans');
+  //   return res;
+  // }
+
+  Future <int?> deleteAllScan() async {
+    final db=await database;
+    final res= await db?.rawDelete('''
+    DELETE FROM Scans
+    ''');
+    return res;
+  }
 }
