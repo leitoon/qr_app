@@ -11,9 +11,12 @@ import 'package:qr_app/widgets/custom_navegationbar.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final scanListProvider= Provider.of<ScanListProvider>(context,listen: false);
     return  Scaffold(
       appBar:AppBar(title: Text('Historial'),
-      actions: [IconButton(onPressed: (){}, 
+      actions: [IconButton(onPressed: (){
+        scanListProvider.borrarTodos();
+      }, 
       icon: Icon(Icons.delete_forever_outlined))],), 
       
        body: _HomePageBody(),
