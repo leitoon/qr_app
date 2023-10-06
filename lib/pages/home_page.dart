@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_app/models/scan_model.dart';
 import 'package:qr_app/pages/direcciones.dart';
 import 'package:qr_app/pages/mapas_page.dart';
-import 'package:qr_app/providers/dbProvider.dart';
+import 'package:qr_app/providers/scan_list_provider.dart';
 import 'package:qr_app/providers/uiProvider.dart';
 import 'package:qr_app/widgets/boton_scan.dart';
 import 'package:qr_app/widgets/custom_navegationbar.dart';
 
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final scanListProvider= Provider.of<ScanListProvider>(context,listen: false);
     return  Scaffold(
       appBar:AppBar(title: Text('Historial'),
-      actions: [IconButton(onPressed: (){}, 
+      actions: [IconButton(onPressed: (){
+        scanListProvider.borrarTodos();
+      }, 
       icon: Icon(Icons.delete_forever_outlined))],), 
       
        body: _HomePageBody(),
@@ -32,15 +35,21 @@ class _HomePageBody extends StatelessWidget {
     
     //obtener el current
     final uiprovider=Provider.of<UiProvidrer>(context);
-final currentindex=uiprovider.selectedMenuOpt;
-   final tempScan= ScanModel(valor: 'http://google.com');
-    DBProvider.db.getScanById(1).then((scan) => print(scan?.valor));
+    final currentindex=uiprovider.selectedMenuOpt;
+   //final tempScan= ScanModel(valor: 'http://google.com');
+    //DBProvider.db.nuevoScan(tempScan);
+    //DBProvider.db.getTodosScans().then((scan) => print);
+    //DBProvider.db.deleteAllScan().then(print);
+// Usar el ScanListProvider
+final scanListProvider=Provider.of<ScanListProvider>(context,listen: false);
 
     switch(currentindex)
     {
       case 0:
+      scanListProvider.cargarScanPorTipo('geo');
         return MapasPage();
       case 1:
+      scanListProvider.cargarScanPorTipo('http');
         return DireccionesPage();  
       default:
       return MapasPage();
