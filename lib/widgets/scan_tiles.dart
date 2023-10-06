@@ -7,7 +7,7 @@ import 'package:qr_app/utils/utils.dart';
 class ScanTiles extends StatelessWidget {
   final String tipo;
 
-  const ScanTiles({ required this.tipo});
+  ScanTiles({ required this.tipo});
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +25,12 @@ class ScanTiles extends StatelessWidget {
       child: ListTile
       (
         leading: Icon(
-          this.tipo=='http' ? Icons.home_outlined:Icons.map_outlined,
+          tipo=='http' ? Icons.home_outlined:Icons.map_outlined,
           color: Theme.of(context).primaryColor,
         ),
         title: Text(scans[i].valor),
         subtitle: Text(scans[i].id.toString()),
-        trailing: Icon(Icons.keyboard_arrow_right,color: Colors.grey,),
+        trailing: const Icon(Icons.keyboard_arrow_right,color: Colors.grey,),
         onTap: () => launchInBrowser(context,scans[i]),
       ),
     )

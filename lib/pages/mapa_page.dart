@@ -12,33 +12,70 @@ class Mapa_page extends StatefulWidget {
 
 class _Mapa_pageState extends State<Mapa_page> {
   Completer<GoogleMapController> _controller=Completer();
-  
+  MapType mapType =MapType.normal;
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)!.settings.arguments;
+    final ScanModel scan = arguments as ScanModel;
 
    final CameraPosition puntoInicial = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    target: scan.getLatLng(),
+    zoom: 17.5,
+    tilt: 50
   );
-     final arguments = ModalRoute.of(context)!.settings.arguments;
- 
-    if (arguments != null) {
-      final ScanModel scan = arguments as ScanModel;
- 
-      return Scaffold(
-        appBar: AppBar(title: const Text('Mapa')),
-        body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: puntoInicial,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      );
-    }
- 
+    //MArcadores
+    Set<Marker> markers = new Set<Marker>();
+    markers.add(Marker
+    (markerId: MarkerId('geo-location'),
+    position: scan.getLatLng(),
+    ));
+
     return Scaffold(
-      appBar: AppBar(title: const Text('NO DATA')),
+      appBar: AppBar(
+        title: const Center(child: Text('Mapa')),
+        actions: 
+        [
+          IconButton(onPressed:
+           ()
+           async{
+            final GoogleMapController controller = await _controller.future;
+            await controller.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(target: scan.getLatLng(),
+                zoom: 17.5,
+                tilt: 50
+                )
+                ));
+           }, 
+          icon: const Icon(Icons.location_history))
+        ],
+        ),
+      body: GoogleMap(
+        zoomControlsEnabled: false,
+      markers: markers,
+      mapType: mapType,
+      initialCameraPosition: puntoInicial,
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+      },
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: ()
+      {
+        if(mapType==MapType.normal)
+        {
+          mapType=MapType.satellite;
+        }
+        else{
+          mapType= MapType.normal;
+        }
+
+        setState(() {
+        });
+      },
+    child: Icon(Icons.layers),
+    ),
     );
+   
 }
 }
